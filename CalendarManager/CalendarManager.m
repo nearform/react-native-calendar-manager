@@ -74,15 +74,14 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
 - (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore eventDetails:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter
 {
     if (error) {
-        rejecter(@"ERR_NO_PERMISSION", error);
+        rejecter(@"ERR_NO_PERMISSION", @"An error occurred during calendar access", error);
     } else if (granted) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.eventStore = localEventStore;
             [self addEvent:eventDetails resolver:resolver rejecter:rejecter];
         });
     } else {
-        NSString *errorMessage = @"User denied calendar access";
-        rejecter("ERR_NO_PERMISSION", {@"message":errorMessage});
+        rejecter(@"ERR_NO_PERMISSION", @"User denied calendar access", nil);
     }
 }
 
