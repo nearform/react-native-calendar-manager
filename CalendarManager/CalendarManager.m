@@ -20,24 +20,9 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
         return;
     }
 
-    NSString *id = [RCTConvert NSString:eventDetails[@"id"]];
-    NSString *name = [RCTConvert NSString:eventDetails[@"name"]];
-    NSString *location = [RCTConvert NSString:eventDetails[@"location"]];
-    NSDate *startTime = [RCTConvert NSDate:eventDetails[@"startTime"]];
-    NSDate *endTime = [RCTConvert NSDate:eventDetails[@"endTime"]];
-
-    EKEvent *event = nil;
-
-    event = [EKEvent eventWithEventStore:self.eventStore];
-    event.startDate = startTime;
-    event.endDate = endTime;
-    event.title = name;
-    event.URL = nil;
-    event.location = location;
-
     dispatch_async(dispatch_get_main_queue(), ^{
       EKEventEditViewController *editEventController = [[EKEventEditViewController alloc] init];
-      editEventController.event = event;
+      editEventController.event = [self createEvent:eventDetails];
       editEventController.eventStore = self.eventStore;
       editEventController.editViewDelegate = self;
 
@@ -48,6 +33,16 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
 }
 
 #pragma mark - EventView delegate
+
+- (EKEvent *)createEvent:(NSDictionary *)eventDetails {
+    EKEvent *event = [EKEvent eventWithEventStore:self.eventStore];
+    event.startDate = [RCTConvert NSDate:eventDetails[@"startTime"]];
+    event.endDate = [RCTConvert NSDate:eventDetails[@"endTime"]];
+    event.title = [RCTConvert NSString:eventDetails[@"name"]];
+    event.location = [RCTConvert NSString:eventDetails[@"location"]];
+
+    return event;
+}
 
 - (void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
 {
