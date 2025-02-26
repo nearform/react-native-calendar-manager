@@ -39,7 +39,7 @@ public class CalendarManagerModule extends ReactContextBaseJavaModule {
 
         try {
             getCurrentActivity().startActivity(intent);
-            promise.resolve();
+            promise.resolve(null);
         } catch (ActivityNotFoundException e) {
             promise.reject("ERR_NO_CALENDAR", e);
         }
