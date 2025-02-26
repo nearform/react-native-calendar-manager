@@ -91,7 +91,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0920;
-				ORGANIZATIONNAME = ShoutEm;
+				ORGANIZATIONNAME = Nearform;
 				TargetAttributes = {
 					A4B4CC6F1CE4A5C800F02149 = {
 						CreatedOnToolsVersion = 7.3.1;

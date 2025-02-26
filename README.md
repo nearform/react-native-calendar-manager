@@ -1,4 +1,4 @@
-# @shoutem/react-native-calendar-manager
+# @nearform/react-native-calendar-manager
 
 *Note*
 This is a fork of [@shoutem/react-native-calendar-manager](https://github.com/shoutem/react-native-calendar-manager), with latest patches applied and with new features that will come later.
@@ -36,7 +36,7 @@ On iOS, you need to manually add the following permissions to your `Info.plist`:
 
 ## Example
 ```javascript
-import CalendarManager from '@shoutem/react-native-calendar-manager';
+import CalendarManager from '@nearform/react-native-calendar-manager';
 
 const inTenMinutes = Date.now() + 1000 * 60 * 10;
 const inTwentyMinutes = Date.now() + 1000 * 60 * 10 * 2;
