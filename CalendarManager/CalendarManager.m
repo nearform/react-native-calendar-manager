@@ -33,6 +33,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details resolver:(RCTPromiseResolveBl
         return;
     }
 
+    NSString *id = [RCTConvert NSString:details[@"id"]];
     NSString *name = [RCTConvert NSString:details[@"name"]];
     NSString *location = [RCTConvert NSString:details[@"location"]];
     NSDate *startTime = [RCTConvert NSDate:details[@"startTime"]];
@@ -41,6 +42,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details resolver:(RCTPromiseResolveBl
     EKEvent *event = nil;
 
     event = [EKEvent eventWithEventStore:self.eventStore];
+    event.eventIdentifier = id;
     event.startDate = startTime;
     event.endDate = endTime;
     event.title = name;
