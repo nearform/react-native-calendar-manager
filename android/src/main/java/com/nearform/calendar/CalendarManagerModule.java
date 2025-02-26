@@ -26,9 +26,8 @@ public class CalendarManagerModule extends ReactContextBaseJavaModule {
     public void addEvent(ReadableMap details, Promise promise) {
         final String name = details.getString("name");
         final String location = details.getString("location");
-        // Double is used since int is not big enough to fit all values of a JavaScript Number
-        final Double startTime = details.getDouble("startTime"); // millis since Unix epoch
-        final Double endTime = details.getDouble("endTime"); // millis since Unix epoch
+        final Double startTime = details.getDouble("startTime");
+        final Double endTime = details.getDouble("endTime");
 
         final Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
