@@ -12,7 +12,7 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     if (!self.eventStore)
     {
@@ -57,7 +57,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
   });
 }
 
-- (void)initEventStoreWithCalendarCapabilities:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject
+- (void)initEventStoreWithCalendarCapabilities:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter
 {
     EKEventStore *localEventStore = [[EKEventStore alloc] init];
 
@@ -72,7 +72,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
     }
 }
 
-- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore eventDetails:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject
+- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore eventDetails:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter
 {
     if (error) {
         rejecter(@"ERR_NO_PERMISSION", error);
