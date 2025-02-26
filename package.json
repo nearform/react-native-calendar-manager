@@ -1,11 +1,11 @@
 {
-  "name": "@shoutem/react-native-calendar-manager",
-  "version": "1.1.1",
+  "name": "@nearform/react-native-calendar-manager",
+  "version": "0.1.0",
   "description": "A calendar manager for react-native",
   "main": "index",
   "repository": {
       "type": "git",
-      "url": "https://github.com/shoutem/react-native-calendar-manager"
+      "url": "https://github.com/ilteoood/react-native-calendar-manager"
   },
   "ios": {
     "project": "CalendarManager.xcodeproj"
