@@ -2,9 +2,6 @@
 //  CalendarManager.h
 //  CalendarManager
 //
-//  Created by Vladimir Adamic on 12/05/16.
-//  Copyright © 2016 ShoutEm. All rights reserved.
-//
 
 #ifndef CalendarManager_h
 #define CalendarManager_h

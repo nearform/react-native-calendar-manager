@@ -18,10 +18,11 @@ export const PERMISSION_ERROR = 'permission';
 
 const CalendarManager = NativeModules.CalendarManager;
 
+const noOpCallback = () => {};
+
 export default {
     ...CalendarManager,
-    addEvent: (event, callback) => {
-        const dummyCallback = () => {};
-        CalendarManager.addEvent(event, callback || dummyCallback);
+    addEvent: (event, callback = noOpCallback) => {
+        CalendarManager.addEvent(event, callback);
     }
 }

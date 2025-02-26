@@ -2,9 +2,6 @@
 //  CalendarManager.m
 //  CalendarManager
 //
-//  Created by Vladimir Adamic on 12/05/16.
-//  Copyright © 2016 ShoutEm. All rights reserved.
-//
 
 #import "CalendarManager.h"
 
@@ -39,7 +36,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details callback:(RCTResponseSenderBl
     // Empty string is converted to uknown file path URL
     // We want to treat it as invalid url
     NSString *rsvpLink = details[@"rsvpLink"];
-    NSURL *URL = rsvpLink.length > 0 ?  [RCTConvert NSURL:rsvpLink] : nil;
+    NSURL *URL = rsvpLink.length > 0 ? [RCTConvert NSURL:rsvpLink] : nil;
 
     NSString *name = [RCTConvert NSString:details[@"name"]];
     NSString *location = [RCTConvert NSString:details[@"location"]];

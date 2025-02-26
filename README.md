@@ -60,7 +60,7 @@ Otherwise, check the manual linking section.
 ```
 #!java
    //... MainApplication.java
-   import com.shoutem.calendar.CalendarManagerPackage; // <--- add this!
+   import com.nearform.calendar.CalendarManagerPackage; // <--- add this!
    //...
 
    @Override
