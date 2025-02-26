@@ -11,4 +11,9 @@ interface ReactNativeCalendarManager {
 
 const CalendarManager: ReactNativeCalendarManager;
 
+export const ERRORS = {
+    NO_CALENDAR: 'ERR_NO_CALENDAR',
+    NO_PERMISSION: 'ERR_NO_PERMISSION',
+};
+
 export default CalendarManager;

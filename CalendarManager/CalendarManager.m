@@ -33,11 +33,6 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details resolver:(RCTPromiseResolveBl
         return;
     }
 
-    // Empty string is converted to uknown file path URL
-    // We want to treat it as invalid url
-    NSString *rsvpLink = details[@"rsvpLink"];
-    NSURL *URL = rsvpLink.length > 0 ?  [RCTConvert NSURL:rsvpLink] : nil;
-
     NSString *name = [RCTConvert NSString:details[@"name"]];
     NSString *location = [RCTConvert NSString:details[@"location"]];
     NSDate *startTime = [RCTConvert NSDate:details[@"startTime"]];
@@ -49,7 +44,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details resolver:(RCTPromiseResolveBl
     event.startDate = startTime;
     event.endDate = endTime;
     event.title = name;
-    event.URL = URL;
+    event.URL = nil;
     event.location = location;
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -91,7 +86,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details resolver:(RCTPromiseResolveBl
 - (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore details:(NSDictionary *)details resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject
 {
     if (error) {
-        rejecter(@"ERR_PERMISSION", error);
+        rejecter(@"ERR_NO_PERMISSION", error);
     } else if (granted) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.eventStore = localEventStore;
@@ -99,7 +94,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details resolver:(RCTPromiseResolveBl
         });
     } else {
         NSString *errorMessage = @"User denied calendar access";
-        rejecter("ERR_PERMISSION", {@"message":errorMessage});
+        rejecter("ERR_NO_PERMISSION", {@"message":errorMessage});
     }
 }
 
