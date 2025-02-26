@@ -14,13 +14,8 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter)
 {
-    if (!self.eventStore)
-    {
-        [self initEventStoreWithCalendarCapabilities:eventDetails resolver:resolver rejecter:rejecter];
-        return;
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [self eventStoreHandler:^{
+     dispatch_async(dispatch_get_main_queue(), ^{
       EKEventEditViewController *editEventController = [[EKEventEditViewController alloc] init];
       editEventController.event = [self createEvent:eventDetails];
       editEventController.eventStore = self.eventStore;
@@ -28,8 +23,9 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
 
       UIViewController *root = RCTPresentedViewController();
       [root presentViewController:editEventController animated:YES completion:nil];
+      resolver(nil);
     });
-
+    } rejecter:rejecter];
 }
 
 #pragma mark - EventView delegate
@@ -51,30 +47,36 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
   });
 }
 
-- (void)initEventStoreWithCalendarCapabilities:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter
+- (void)eventStoreHandler:(void (^)(void))completionBlock  rejecter:(RCTPromiseRejectBlock)rejecter {
+    if (!self.eventStore) {
+        [self initEventStoreWithCalendarCapabilities:completionBlock rejecter:rejecter];
+    } else {
+        completionBlock();
+    }
+}
+
+- (void)initEventStoreWithCalendarCapabilities:(void (^)(void))completionBlock rejecter:(RCTPromiseRejectBlock)rejecter
 {
     EKEventStore *localEventStore = [[EKEventStore alloc] init];
 
     if (@available(iOS 17, *)) {
         [localEventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
-            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore eventDetails:eventDetails resolver:resolver rejecter:rejecter];
+            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore completionBlock:completionBlock rejecter:rejecter];
         }];
     } else {
         [localEventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore eventDetails:eventDetails resolver:resolver rejecter:rejecter];
+            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore completionBlock:completionBlock rejecter:rejecter];
         }];
     }
 }
 
-- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore eventDetails:(NSDictionary *)eventDetails resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter
+- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore completionBlock:(void (^)(void))completionBlock  rejecter:(RCTPromiseRejectBlock)rejecter
 {
     if (error) {
         rejecter(@"ERR_NO_PERMISSION", @"An error occurred during calendar access", error);
     } else if (granted) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.eventStore = localEventStore;
-            [self addEvent:eventDetails resolver:resolver rejecter:rejecter];
-        });
+        self.eventStore = localEventStore;
+        completionBlock();
     } else {
         rejecter(@"ERR_NO_PERMISSION", @"User denied calendar access", nil);
     }
