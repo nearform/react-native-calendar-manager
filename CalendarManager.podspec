@@ -1,15 +1,16 @@
+package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+
 Pod::Spec.new do |s|
   s.name         = "CalendarManager"
-  s.version      = "0.1.0"
-  s.summary      = "Extension used to manipulate calendars with React Native"
+  s.version      = package['version']
+  s.summary      = package['description']
+  s.license      = package['license']
+  s.authors      = package['author']
+  s.homepage     = package['homepage']
+  s.source       = { :git => package['repository']['url'], :tag => s.version }
 
-  s.homepage     = "https://nearform.com/"
-  s.license      = { :type => "MIT" }
-  s.author       = { "Matteo Pietro Dazzi" => "matteo.pietro.dazzi@nearform.com" }
-  s.platforms    = { :ios => "8.0" }
-  s.source       = { :git => "https://github.com/ilteoood/react-native-calendar-manager.git", :tag => "0.1" }
-
+  s.platforms       = { ios: '13.4' }
   s.source_files = '**/*.{h,m}'
 
-  s.dependency 'React'
+  s.dependency "React"
 end

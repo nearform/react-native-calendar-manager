@@ -1,11 +1,14 @@
 {
   "name": "@nearform/react-native-calendar-manager",
   "version": "0.1.0",
-  "description": "A calendar manager for react-native",
+  "description": "Module used to manipulate the calendar using React Native",
+  "license": "MIT",
+  "author": "Matteo Pietro Dazzi",
+  "homepage": "https://nearform.com",
   "main": "index",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/ilteoood/react-native-calendar-manager"
+    "type": "git",
+    "url": "https://github.com/ilteoood/react-native-calendar-manager"
   },
   "ios": {
     "project": "CalendarManager.xcodeproj"
