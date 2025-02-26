@@ -25,11 +25,11 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     if (!self.eventStore)
     {
-        [self initEventStoreWithCalendarCapabilities:details callback:callback];
+        [self initEventStoreWithCalendarCapabilities:details resolver:resolver rejecter:rejecter];
         return;
     }
 
@@ -73,36 +73,33 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)details callback:(RCTResponseSenderBl
   });
 }
 
-- (void)initEventStoreWithCalendarCapabilities:(NSDictionary *)details callback:(RCTResponseSenderBlock)callback
+- (void)initEventStoreWithCalendarCapabilities:(NSDictionary *)details resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject
 {
     EKEventStore *localEventStore = [[EKEventStore alloc] init];
 
     if (@available(iOS 17, *)) {
         [localEventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
-            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore details:details callback:callback];
+            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore details:details resolver:resolver rejecter:rejecter];
         }];
     } else {
         [localEventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore details:details callback:callback];
+            [self handleEventStoreAccessWithGranted:granted error:error localEventStore:localEventStore details:details resolver:resolver rejecter:rejecter];
         }];
     }
 }
 
-- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore details:(NSDictionary *)details callback:(RCTResponseSenderBlock)callback
+- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore details:(NSDictionary *)details resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject
 {
     if (error) {
-        return callback(@[@{@"type":@"permission", @"message": error.localizedDescription}]);
-    }
-
-    if (granted) {
+        rejecter(@"ERR_PERMISSION", error);
+    } else if (granted) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.eventStore = localEventStore;
-            [self addEvent:details callback:callback];
+            [self addEvent:details resolver:resolver rejecter:rejecter];
         });
     } else {
         NSString *errorMessage = @"User denied calendar access";
-        callback(@[@{@"type":@"permission", @"message":errorMessage}]);
-        NSLog(@"%@", errorMessage);
+        rejecter("ERR_PERMISSION", {@"message":errorMessage});
     }
 }
 
