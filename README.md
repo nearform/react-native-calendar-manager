@@ -1,9 +1,9 @@
 # @shoutem/react-native-calendar-manager
 
 *Note*
-We renamed the package from `react-native-calendar-manager` to `@shoutem/react-native-calendar-manager` because the name was already taken on npm before we published.
+This is a fork of [@shoutem/react-native-calendar-manager](https://github.com/shoutem/react-native-calendar-manager), with latest patches applied and with new features that will come later.
 
-A calendar manager for React Native. Exposes `addEvent` method which can save an event to an Android or iOS device's native calendar app.
+A calendar manager for React Native. Exposes methods which can be used to interact with Android or iOS device's native calendar app.
 
 ## Supported React Native platforms
 
@@ -12,65 +12,25 @@ A calendar manager for React Native. Exposes `addEvent` method which can save an
 
 ## Plugin installation
 
-Run `npm install --save @shoutem/react-native-calendar-manager`
+Run `npm install --save @nearform/react-native-calendar-manager`
 
 ### Linking
 
-If you're running React Native 0.60.0+, you're done, this module supports autolinking. If you're using React Native 0.59.10 and lower, check tag v1.0.7 instructions.
+We support only React Native 0.76+ and autolinking is supported by default for this module.
 
-Otherwise, check the manual linking section.
+### Permissions
 
-### Manual linking
+On iOS, you need to manually add the following permissions to your `Info.plist`:
 
-#### iOS
-
-1. Open your project in Xcode, right click on `Libraries` and click `Add
-   Files to "Your Project Name"` Look under `node_modules/@shoutem/react-native-calendar-manager` and add `CalendarManager.xcodeproj`.  
-2. Add `libCalendarManager.a` to `Build Phases -> Link Binary With Libraries`
-3. Click on `CalendarManager.xcodeproj` in `Libraries` and go the `Build
-   Settings` tab. Double click the text to the right of `Header Search
-   Paths` and verify that it has the lines `$(SRCROOT)/../../node_modules/react-native/React/**` and `$(SRCROOT)/node_modules/react-native/React/**` - if it
-   doesn't, then add them. This is so Xcode is able to find the headers that
-   the `CalendarManager` source files are referring to by pointing to the
-   header files installed within the `react-native` `node_modules`
-   directory.
-
-#### Android
-
-1. in `android/settings.gradle`   
+**iOS < 17**
+```xml
+<key>NSCalendarsUsageDescription</key>
+<string>This app requires access to the calendar</string>
 ```
-#!groovy
-   ...
-   include ':@shoutem/react-native-calendar-manager'
-   project(':@shoutem/react-native-calendar-manager').projectDir = new File(rootProject.projectDir, '../node_modules/@shoutem/react-native-calendar-manager/android')
-
-```
-
-2. in `android/app/build.gradle` add:
-```
-#!groovy
-   dependencies {
-       ...
-       implementation project(':@shoutem/react-native-calendar-manager')
-   }
-```
-
-3. and finally, in `android/src/main/java/com/{YOUR_APP_NAME}/MainApplication.java` add:
-
-```
-#!java
-   //... MainApplication.java
-   import com.nearform.calendar.CalendarManagerPackage; // <--- add this!
-   //...
-
-   @Override
-   protected List<ReactPackage> getPackages() {
-     return Arrays.<ReactPackage>asList(
-       ...
-       packages.add(new CalendarManagerPackage()); // <---- add this!
-     );
-   }
-
+**iOS >= 17**
+```xml
+<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+<string>This app requires access to the calendar and reminders</string>
 ```
 
 
