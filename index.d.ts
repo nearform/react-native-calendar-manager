@@ -1,4 +1,5 @@
 type Event = {
+    id?: string;
     name: string;
     location: string;
     startTime: number;
