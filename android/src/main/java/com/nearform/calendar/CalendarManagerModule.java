@@ -26,7 +26,6 @@ public class CalendarManagerModule extends ReactContextBaseJavaModule {
     public void addEvent(ReadableMap eventDetails, Promise promise) {
         final Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_ID, eventDetails.getString("id"))
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, eventDetails.getDouble("startTime").longValue())
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, eventDetails.getDouble("endTime").longValue())
                 .putExtra(CalendarContract.Events.TITLE, eventDetails.getString("name"))

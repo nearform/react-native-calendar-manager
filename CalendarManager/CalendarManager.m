@@ -29,7 +29,6 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
     EKEvent *event = nil;
 
     event = [EKEvent eventWithEventStore:self.eventStore];
-    event.eventIdentifier = id;
     event.startDate = startTime;
     event.endDate = endTime;
     event.title = name;
