@@ -3,6 +3,7 @@ type Event = {
     location: string;
     startTime: number;
     endTime: number;
+    timeZone?: string;
 }
 
 interface ReactNativeCalendarManager {

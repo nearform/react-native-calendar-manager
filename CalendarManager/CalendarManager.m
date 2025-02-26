@@ -37,6 +37,9 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
     event.title = [RCTConvert NSString:eventDetails[@"name"]];
     event.location = [RCTConvert NSString:eventDetails[@"location"]];
 
+    NSString *timeZone = [RCTConvert NSString:eventDetails[@"timeZone"]];
+    event.timeZone = timeZone ? [NSTimeZone timeZoneWithName:timeZone] : [NSTimeZone localTimeZone];
+
     return event;
 }
 
