@@ -33,4 +33,4 @@ jobs:
             secrets.OPTIC_TOKEN }}
           semver: ${{ github.event.inputs.semver }}
           commit-message: 'chore: release {version}'
-          provenance: true
+          provenance: false
