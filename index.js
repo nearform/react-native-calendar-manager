@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, PermissionsAndroid, Platform } from 'react-native';
 
 export const ERRORS = {
     NO_CALENDAR: 'ERR_NO_CALENDAR',
@@ -13,5 +13,18 @@ export const RESULTS = {
 }
 
 const CalendarManager = NativeModules.CalendarManager;
+const oldAddEvent = CalendarManager.addEvent.bind();
+
+CalendarManager.addEvent = async (eventDetails) => {
+    if (Platform.OS === 'android') {
+        const permissionResult = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_CALENDAR,
+        );
+        if (permissionResult !== PermissionsAndroid.RESULTS.GRANTED) {
+            throw new Error(ERRORS.NO_PERMISSION)
+        }
+    }
+    return oldAddEvent(eventDetails);
+}
 
 export default CalendarManager;
