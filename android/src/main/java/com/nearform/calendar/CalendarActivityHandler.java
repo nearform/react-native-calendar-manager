@@ -1,8 +1,8 @@
 package com.nearform.calendar;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
@@ -16,6 +16,7 @@ import com.nearform.calendar.CalendarEvent;
 
 public class CalendarActivityHandler extends BaseActivityEventListener {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
+    private static final double ONE_DAY_MILLIS = 24 * 60 * 60 * 1000L;
     private Promise promise;
     private CalendarEvent calendarEvent;
 
@@ -40,13 +41,16 @@ public class CalendarActivityHandler extends BaseActivityEventListener {
     private boolean isEventAdded(final Activity activity) {
         final ContentResolver cr = activity.getContentResolver();
         final Uri uri = CalendarContract.Events.CONTENT_URI;
-        final String selection = "((? = ?) AND (? = ?))";
-        final String[] selectionArgs = new String[]{CalendarContract.Events.TITLE, this.calendarEvent.name, CalendarContract.Events.DTSTART, String.valueOf(this.calendarEvent.startTime)};
 
-        final Cursor cur = cr.query(uri, null, selection, selectionArgs, null);
-        final int count = cur.getCount();
-        cur.close();
+        final String selection = "(" + CalendarContract.Events.TITLE + " = ? AND " + CalendarContract.Events.DTSTART + " > ? AND " + CalendarContract.Events.DTSTART + " < ?)";
+        final String[] selectionArgs = new String[]{this.calendarEvent.name, String.valueOf(this.calendarEvent.startTime - ONE_DAY_MILLIS), String.valueOf(this.calendarEvent.endTime + ONE_DAY_MILLIS)};
 
-        return count > 0;
+        final Cursor cursor = cr.query(uri, null, selection, selectionArgs, null);
+
+        final boolean eventsFound = cursor.getCount() > 0;
+
+        cursor.close();
+
+        return eventsFound;
     }
 }
