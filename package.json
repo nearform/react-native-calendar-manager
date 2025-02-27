@@ -1,6 +1,6 @@
 {
   "name": "@nearform/react-native-calendar-manager",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Module used to manipulate the calendar using React Native",
   "license": "MIT",
   "author": "Matteo Pietro Dazzi",
