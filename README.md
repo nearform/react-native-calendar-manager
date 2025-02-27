@@ -33,6 +33,12 @@ On iOS, you need to manually add the following permissions to your `Info.plist`:
 <string>This app requires access to the calendar and reminders</string>
 ```
 
+On Android, you need to manually add the following to your `AndroidManifest.xml`
+
+```xml
+<uses-permission android:name="android.permission.READ_CALENDAR" />
+```
+
 
 ## Example
 ```javascript
