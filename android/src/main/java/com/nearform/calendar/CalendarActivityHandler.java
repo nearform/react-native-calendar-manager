@@ -16,7 +16,6 @@ import com.nearform.calendar.CalendarEvent;
 
 public class CalendarActivityHandler extends BaseActivityEventListener {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
-    private static final double ONE_DAY_MILLIS = 24 * 60 * 60 * 1000L;
     private Promise promise;
     private CalendarEvent calendarEvent;
 
