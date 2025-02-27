@@ -23,17 +23,14 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: msgadi/optic-release-automation-action@feat/adding-alternate-otp-flow
+      - uses: nearform-actions/optic-release-automation-action@v4
         with:
-          github-token: ${{ secrets.github_token }}
           npm-token: >-
             ${{ secrets[format('NPM_TOKEN_{0}', github.actor)] ||
             secrets.NPM_TOKEN }}
           optic-token: >-
             ${{ secrets[format('OPTIC_TOKEN_{0}', github.actor)] ||
             secrets.OPTIC_TOKEN }}
-          ngrok-token: ${{ secrets.NGROK_TOKEN }}
           semver: ${{ github.event.inputs.semver }}
-          build-command: |
-            npm install
+          commit-message: 'chore: release {version}'
           provenance: true
