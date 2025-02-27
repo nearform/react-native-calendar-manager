@@ -38,15 +38,19 @@ public class CalendarActivityHandler extends BaseActivityEventListener {
         }
     }
 
+    // Android Calendar API does not support milliseconds precision
+    private String correctTime(final long time) {
+        return String.valueOf((time / 1000L) * 1000L);
+    }
+
     private boolean isEventAdded(final Activity activity) {
         final ContentResolver cr = activity.getContentResolver();
         final Uri uri = CalendarContract.Events.CONTENT_URI;
 
-        final String selection = "(" + CalendarContract.Events.TITLE + " = ? AND " + CalendarContract.Events.DTSTART + " > ? AND " + CalendarContract.Events.DTSTART + " < ?)";
-        final String[] selectionArgs = new String[]{this.calendarEvent.name, String.valueOf(this.calendarEvent.startTime - ONE_DAY_MILLIS), String.valueOf(this.calendarEvent.endTime + ONE_DAY_MILLIS)};
+        final String selection = "(" + CalendarContract.Events.TITLE + " = ? AND " + CalendarContract.Events.DTSTART + " >= ? AND " + CalendarContract.Events.DTSTART + " <= ? AND " + CalendarContract.Events.EVENT_TIMEZONE + " = ?)";
+        final String[] selectionArgs = new String[]{this.calendarEvent.name, this.correctTime(this.calendarEvent.startTime), this.correctTime(this.calendarEvent.endTime), String.valueOf(this.calendarEvent.timeZone.getID())};
 
         final Cursor cursor = cr.query(uri, null, selection, selectionArgs, null);
-
         final boolean eventsFound = cursor.getCount() > 0;
 
         cursor.close();
