@@ -3,6 +3,7 @@ import { NativeModules } from 'react-native';
 export const ERRORS = {
     NO_CALENDAR: 'ERR_NO_CALENDAR',
     NO_PERMISSION: 'ERR_NO_PERMISSION',
+    UNKNOWN: 'ERR_UNKNOWN',
 };
 
 export const RESULTS = {
