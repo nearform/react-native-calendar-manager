@@ -11,6 +11,7 @@ import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 
 import java.lang.RuntimeException;
+import java.lang.StringBuilder;
 
 import com.nearform.calendar.CalendarEvent;
 
@@ -46,7 +47,12 @@ public class CalendarActivityHandler extends BaseActivityEventListener {
         final ContentResolver cr = activity.getContentResolver();
         final Uri uri = CalendarContract.Events.CONTENT_URI;
 
-        final String selection = "(" + CalendarContract.Events.TITLE + " = ? AND " + CalendarContract.Events.DTSTART + " >= ? AND " + CalendarContract.Events.DTSTART + " <= ? AND " + CalendarContract.Events.EVENT_TIMEZONE + " = ?)";
+        final String selection = new StringBuilder("(").append(CalendarContract.Events.TITLE).append(" = ? AND ")
+            .append(CalendarContract.Events.DTSTART).append(" >= ? AND ")
+            .append(CalendarContract.Events.DTSTART).append(" <= ? AND ")
+            .append(CalendarContract.Events.EVENT_TIMEZONE).append(" = ?)")
+            .toString();
+
         final String[] selectionArgs = new String[]{this.calendarEvent.name, this.correctTime(this.calendarEvent.startTime), this.correctTime(this.calendarEvent.endTime), String.valueOf(this.calendarEvent.timeZone.getID())};
 
         final Cursor cursor = cr.query(uri, null, selection, selectionArgs, null);
