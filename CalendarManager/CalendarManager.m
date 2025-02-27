@@ -23,9 +23,8 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
 
       UIViewController *root = RCTPresentedViewController();
       [root presentViewController:editEventController animated:YES completion:nil];
-      resolver(nil);
     });
-    } rejecter:rejecter];
+    } resolver:resolver rejecter:rejecter];
 }
 
 #pragma mark - EventView delegate
@@ -46,11 +45,20 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
 - (void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-    [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [controller.presentingViewController dismissViewControllerAnimated:YES completion:^{
+        if (action == EKEventEditViewActionSaved) {
+            self.resolver(@"EVENT_CREATED");
+        } else if (action == EKEventEditViewActionDeleted) {
+            self.resolver(@"EVENT_DELETED");
+        } else {
+            self.resolver(@"EVENT_CANCELLED");
+        }
+    }];
   });
 }
 
-- (void)eventStoreHandler:(void (^)(void))completionBlock  rejecter:(RCTPromiseRejectBlock)rejecter {
+- (void)eventStoreHandler:(void (^)(void))completionBlock resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter {
+    self.resolver = resolver;
     if (!self.eventStore) {
         [self initEventStoreWithCalendarCapabilities:completionBlock rejecter:rejecter];
     } else {
@@ -73,7 +81,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
     }
 }
 
-- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore completionBlock:(void (^)(void))completionBlock  rejecter:(RCTPromiseRejectBlock)rejecter
+- (void)handleEventStoreAccessWithGranted:(BOOL)granted error:(NSError *)error localEventStore:(EKEventStore *)localEventStore completionBlock:(void (^)(void))completionBlock rejecter:(RCTPromiseRejectBlock)rejecter
 {
     if (error) {
         rejecter(@"ERR_NO_PERMISSION", @"An error occurred during calendar access", error);

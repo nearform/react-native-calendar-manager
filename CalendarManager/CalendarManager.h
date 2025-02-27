@@ -13,4 +13,5 @@
 
 @interface CalendarManager : NSObject <RCTBridgeModule, EKEventEditViewDelegate>
 @property (atomic, retain) EKEventStore *eventStore;
+@property (nonatomic, copy) RCTPromiseResolveBlock resolver;
 @end
