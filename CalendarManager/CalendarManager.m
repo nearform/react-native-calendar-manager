@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
   dispatch_async(dispatch_get_main_queue(), ^{
     [controller.presentingViewController dismissViewControllerAnimated:YES completion:^{
         if (action == EKEventEditViewActionSaved) {
-            self.resolver(@"EVENT_CREATED");
+            self.resolver(@"EVENT_SAVED");
         } else if (action == EKEventEditViewActionDeleted) {
             self.resolver(@"EVENT_DELETED");
         } else {
