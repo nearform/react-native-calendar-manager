@@ -2,6 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import <React/RCTConvert.h>
+#import <objc/runtime.h>
 
 @implementation CalendarManager
 
@@ -21,10 +22,12 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
       editEventController.eventStore = self.eventStore;
       editEventController.editViewDelegate = self;
 
+      objc_setAssociatedObject(editEventController, "resolver", resolver, OBJC_ASSOCIATION_COPY_NONATOMIC);
+
       UIViewController *root = RCTPresentedViewController();
       [root presentViewController:editEventController animated:YES completion:nil];
     });
-    } resolver:resolver rejecter:rejecter];
+    } rejecter:rejecter];
 }
 
 #pragma mark - EventView delegate
@@ -46,19 +49,22 @@ RCT_EXPORT_METHOD(addEvent:(NSDictionary *)eventDetails resolver:(RCTPromiseReso
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     [controller.presentingViewController dismissViewControllerAnimated:YES completion:^{
-        if (action == EKEventEditViewActionSaved) {
-            self.resolver(@"EVENT_SAVED");
-        } else if (action == EKEventEditViewActionDeleted) {
-            self.resolver(@"EVENT_DELETED");
-        } else {
-            self.resolver(@"EVENT_CANCELLED");
+        RCTPromiseResolveBlock resolver = objc_getAssociatedObject(controller, "resolver");
+
+        if (resolver) {
+            if (action == EKEventEditViewActionSaved) {
+                resolver(@"EVENT_SAVED");
+            } else if (action == EKEventEditViewActionDeleted) {
+                resolver(@"EVENT_DELETED");
+            } else {
+                resolver(@"EVENT_CANCELLED");
+            }
         }
     }];
   });
 }
 
-- (void)eventStoreHandler:(void (^)(void))completionBlock resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter {
-    self.resolver = resolver;
+- (void)eventStoreHandler:(void (^)(void))completionBlock rejecter:(RCTPromiseRejectBlock)rejecter {
     if (!self.eventStore) {
         [self initEventStoreWithCalendarCapabilities:completionBlock rejecter:rejecter];
     } else {
